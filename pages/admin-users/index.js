@@ -29,6 +29,7 @@ const AdminUserPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [usersSize, setUsersSize] = useState(0);
   const [userList, setUserList] = useState([]);
+  const [originalUserList, setOriginalUserList] = useState([]);
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -50,7 +51,7 @@ const AdminUserPage = () => {
         process.env.NEXT_PUBLIC_REAL_PRO_STUDIO_BASE_PATH +
         process.env.NEXT_PUBLIC_REAL_PRO_STUDIO_GET_ADMIN_USERS,
     });
-    console.log(httpGetAdminUserResponse?.data?.data);
+    setOriginalUserList(httpGetAdminUserResponse?.data?.data);
     setUserList(httpGetAdminUserResponse?.data?.data);
     const startIndex = 0 * TABLE_NUM_PAGE;
     const endIndex = startIndex + TABLE_NUM_PAGE;
@@ -62,6 +63,30 @@ const AdminUserPage = () => {
     );
   };
 
+const userSearchHandler = (e) =>{
+  console.log('Search User ', e.target.value);
+  const searchValue = e.target.value;
+  const startIndex = 0 * TABLE_NUM_PAGE;
+  const endIndex = startIndex + TABLE_NUM_PAGE;
+  const userListTemp = originalUserList.filter(user => user.firstName.toLowerCase().includes(searchValue.toLowerCase()) || user.lastName.toLowerCase().includes(searchValue.toLowerCase()));
+  setUserList(userListTemp);
+  setUsersSize(Math.ceil(userListTemp.length/TABLE_NUM_PAGE));
+  setCurrentPage(1);
+  setDisplayUser(userListTemp.slice(startIndex, endIndex));
+}
+
+  const selectAccountHandler = (e) => {
+    const tempAccount = e === "default" ? null : parseInt(e);
+    const startIndex = 0 * TABLE_NUM_PAGE;
+    const endIndex = startIndex + TABLE_NUM_PAGE;
+    const userListTemp =(e == 'default') ? originalUserList :originalUserList.filter(user => user.accountTypeId.id == (tempAccount));
+    setUserList(userListTemp);
+    setUsersSize(Math.ceil(userListTemp.length/TABLE_NUM_PAGE));
+    setCurrentPage(1);
+    setDisplayUser(userListTemp.slice(startIndex, endIndex));
+  };
+
+ 
   const onPageChange = (e) => {
     setCurrentPage(e);
     const startIndex = (e - 1) * TABLE_NUM_PAGE;
@@ -72,6 +97,7 @@ const AdminUserPage = () => {
     getUsersHandler();
   }, []);
 
+  
   const deleteUserHandler = async (e) => {
     console.log("deleteUserHandler: ", e);
     setOpenDelete(true);
@@ -134,8 +160,7 @@ const AdminUserPage = () => {
   };
   const addUserHandler = async (e) => {
     e.preventDefault();
-
-    // if (registrationValidationHandler()) {
+ 
     const httpRegisterResponse = await HttpRegister(
       first_name,
       last_name,
@@ -152,6 +177,7 @@ const AdminUserPage = () => {
     ) {
       getUsersHandler();
       setStatus(1);
+      setOpen(false);
       setDisplayMSG(
         "Account registered successfully please check your email to Activate account"
       );
@@ -186,13 +212,15 @@ const AdminUserPage = () => {
       httpUserUpdateResponse?.data?.success
     ) {
       getUsersHandler();
+      setOpenEdit(false);
       setStatus(1);
       setDisplayMSG("Account Updated Successfully");
     } else {
       setStatus(0);
+      setOpenEdit(false);
       setDisplayMSG(
-        httpRegisterResponse?.data?.msg
-          ? httpRegisterResponse?.data?.msg
+        httpUserUpdateResponse?.data?.msg
+          ? httpUserUpdateResponse?.data?.msg
           : "We are experiencing technical difficulties please try again later"
       );
     }
@@ -205,14 +233,64 @@ const AdminUserPage = () => {
     <section>
       <div className="flex ...">
         <AdminSideBar />
-        <div className="flex-auto w-max ...">
+        <div className="flex-auto w-64 ...">
           <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-            <div className="relative text-white text-center	justify-between items-center pb-4 bg-white dark:bg-gray-900 ">
-              Users
-              <div className="flex">
+            <div className="flex justify-between items-center pb-4 bg-white dark:bg-gray-900">
+              <label htmlFor="table-search" className="sr-only">
+                Search
+              </label>
+              <div className="relative">
+                <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                  <svg
+                    className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clipRule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  id="table-search-users"
+                  className="block p-2 pl-10 w-80 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Search"
+                  onChange={userSearchHandler}
+                />
+              </div>
+              <div className="relative">
+                <select
+                  id="propertyService"
+                  required={true}
+                  // value={selectProduct}
+                  onChange={(e) => selectAccountHandler(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                >
+                  <option selected value={"default"}>
+                    Account Type
+                  </option>
+                  
+                    <option value={1} key={1}>
+                      Admin
+                    </option>
+                         <option value={2} key={2}>
+                      Agent
+                    </option>
+                      <option value={3} key={3}>
+                      Photographer
+                    </option>
+                </select>
+              </div>
+
+              <div className="relative">
                 <button
-                  onClick={addUserButton}
                   type="button"
+                  onClick={addUserButton}
                   className=" bg-gray-50 dark:bg-gray-700 dark:text-gray-400 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center justify-center  w-full inline-flex items-center dark:focus:ring-gray-500 mr-2 mb-2"
                   data-mdb-ripple="true"
                   data-mdb-ripple-color="light"
@@ -267,7 +345,7 @@ const AdminUserPage = () => {
                           }
                         ></div>
                         {
-                          (dataStatus?.data?.data).filter(
+                          (dataStatus?.data?.data)?.filter(
                             (stat) =>
                               stat.type === USER_STAT &&
                               row?.status.id === stat.statusId

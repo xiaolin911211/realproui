@@ -13,11 +13,11 @@ const ServicesPage = () => {
   );
 
   const bookNowHandler = () => {
-    console.log("bookNowHandler", data);
+    // console.log("bookNowHandler", data?.data);
 
-    // router.push({
-    //   pathname: "/booknow",
-    // });
+    router.push({
+      pathname: "/booknow",
+    });
   };
   return (
     <div className="min-h-screen dark:bg-gray-900 ">
@@ -38,11 +38,11 @@ const ServicesPage = () => {
                     {item.propertySizeName}
                   </h5>
                 </a>
-                {item.pricing.map((priceItem, priceIdex) => (
-                  <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                    Service {priceIdex}: {priceItem.productName} $
+                {item.pricing.map((priceItem) => (
+                 priceItem.active == 1 ? (<p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                   {priceItem.productName} $
                     {priceItem.price}
-                  </p>
+                  </p>) : null
                 ))}
               </div>
               <button

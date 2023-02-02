@@ -28,7 +28,7 @@ const data = {
 };
 
 const getDashboard = async () => {
-  const httpGetDashboardResponse = await HttpGetDashboard();
+  const httpGetDashboardResponse = await HttpGetDashboard('62AA8C3A48DDB63EECB68A70');
 }
 const AdminDashBoardPage = () => {
   return (
@@ -38,7 +38,7 @@ const AdminDashBoardPage = () => {
         <div class="grid overflow-hidden grid-cols-6 grid-rows-6 gap-2">
           <div class="box row-start-1 row-end-1 col-start-1 col-end-1">
             {" "}
-            <Card className="h-full">
+            <Card className="h-full color-white">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -105,7 +105,7 @@ const AdminDashBoardPage = () => {
             {" "}
             <Card className="h-full">
               <div>
-                <h2>Total Orders 2347 </h2>
+                <h2>Total Users 2347 </h2>
                 <Doughnut data={data} width={400} height={400} />
               </div>
             </Card>

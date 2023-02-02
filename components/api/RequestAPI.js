@@ -351,6 +351,33 @@ export const HttpGetProducts = async (url) => {
   }
 };
 
+export const HttpUpdateProducts = async (
+  id,
+  productName,
+  price,
+  active
+) => {
+  const httpURL =
+    process.env.NEXT_PUBLIC_REAL_PRO_STUDIO_BASE_PATH +
+    process.env.NEXT_PUBLIC_REAL_PRO_STUDIO_UPDATE_PRODUCT;
+  const httpRequest = {
+    productId: id,
+    productName: productName,
+    price: price,
+    active: active
+  };
+  try {
+    const response = await axios.post(httpURL, httpRequest,{
+      headers: HTTP_HEADER,
+      timeout: HTTP_TIMEOUT,
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
 export const HttpMediaUpload = async (
   orderId,
   userId,

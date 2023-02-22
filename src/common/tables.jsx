@@ -1,6 +1,6 @@
-import {Table} from "flowbite-react";
+import {Button, Table} from "flowbite-react";
 
-const Tables = ({getOrderList,openOrderDetailHandler,headerCell}) =>{
+const Tables = ({getOrderList,openOrderDetailHandler,headerCell, label}) =>{
 
     return (<>
     <Table hoverable={true} striped={true}>
@@ -44,15 +44,15 @@ const Tables = ({getOrderList,openOrderDetailHandler,headerCell}) =>{
                     <Table.Cell> {row?.status?.name}</Table.Cell>
                     <Table.Cell>
                         {" "}
-                        <button
-                            onClick={() => openOrderDetailHandler(row?.orderId)}
+                        <Button
+                            onClick={() => openOrderDetailHandler(row)}
+                            color={"dark"}
                             type="button"
-                            className="text-gray-900 bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-500 mr-2 mb-2"
                             data-mdb-ripple="true"
                             data-mdb-ripple-color="light"
                         >
-                            Open
-                        </button>
+                            {label}
+                        </Button>
                     </Table.Cell>
                 </Table.Row>
             ))}

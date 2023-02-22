@@ -1,13 +1,10 @@
-
 import {
     CACHE_SERVICES,
     MESSAGE_SERVER_ERROR,
-    MESSAGE_SUCCESS_UPDATE_PRODUCT,
     MESSAGE_SUCCESS_UPDATE_USER,
     MESSAGE_UNAUTHORIZED,
-    PAGE_LOG_IN,
     SERVICES_HEADER,
-    UNAUTHORIZED_CODE, WAIT_EXECUTE
+    UNAUTHORIZED_CODE
 } from "../../common/constants";
 import {DisplayMessage, FetchDataCache, UnauthorizedLogout} from "../../common/sharedComponent";
 import {useContext, useEffect, useState} from "react";

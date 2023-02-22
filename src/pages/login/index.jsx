@@ -1,10 +1,11 @@
 import React, {useContext, useState} from "react";
 import {UserContext} from "../../contexts/context";
-import {LOG_IN, MESSAGE_SERVER_ERROR, MESSAGE_SUCCESS_FORGOT_PWD, PAGE_REGISTRATION} from "../../common/constants";
+import {LOG_IN, MESSAGE_SERVER_ERROR, PAGE_REGISTRATION} from "../../common/constants";
 import {httpCommonPost} from "../../api/http-request";
 import {DisplayMessage, Loading} from "../../common/sharedComponent";
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {Button} from "flowbite-react";
+
 const Login = () => {
     const navigate = useNavigate();
     const { dispatch }  = useContext(UserContext);

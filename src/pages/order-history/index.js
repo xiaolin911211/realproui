@@ -1,7 +1,7 @@
 import {Breadcrumb, Pagination} from "flowbite-react";
 import {httpCommonGet} from "../../api/http-request";
 import {useContext, useEffect, useState} from "react";
-import Tables from "./tables";
+import Tables from "../../common/tables";
 import {
     ACTION_SELECT_ORDER,
     LOG_IN,
@@ -41,7 +41,7 @@ const OrderHistory = () => {
     };
     const openOrderDetailHandler = (payload) =>{
 
-        dispatchOrder({type: ACTION_SELECT_ORDER, order: {'orderId': payload}});
+        dispatchOrder({type: ACTION_SELECT_ORDER, order: {'orderId': payload?.orderId}});
         navigate(PAGE_ORDER_DETAIL,{replace: true})
     }
 
@@ -72,7 +72,7 @@ const OrderHistory = () => {
                     <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
                         <DisplayMessage isDisplay={displayMessage.isDisplay} isMessage={displayMessage.isMessage}
                                         isSuccess={displayMessage.isSuccess}/>
-                        <Tables getOrderList={orderData} openOrderDetailHandler={openOrderDetailHandler} headerCell={ORDER_HISTORY_HEADER}/>
+                        <Tables getOrderList={orderData} openOrderDetailHandler={openOrderDetailHandler} headerCell={ORDER_HISTORY_HEADER} label={'Open'}/>
                         <div className="flex flex-col items-center">
               <span className="text-xl text-gray-700 dark:text-gray-400">
                 Page {pagination.pageNo}

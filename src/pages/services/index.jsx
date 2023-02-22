@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 import {useNavigate} from "react-router-dom";
 import {DisplayMessage, FetchDataCache, Loading} from "../../common/sharedComponent";
 import {
-    CACHE_SERVICES,
+    CACHE_SERVICES, DISPLAY_INIT,
     MESSAGE_SERVER_ERROR,
     PAGE_BOOK_NOW,
     SERVICE_TYPE_PHOTO_BODY,
@@ -18,12 +18,7 @@ import ServiceTypes from "./service-types";
 const Services = () => {
     const [services, setServices] = useState([]);
     const navigate = useNavigate();
-    const [displayMessage, setDisplayMessage] = useState({
-        isDisplay: false,
-        isMessage: '',
-        isSuccess: false,
-        loading: false
-    });
+    const [displayMessage, setDisplayMessage] = useState(DISPLAY_INIT);
     useEffect(() => {
         const storedServices = sessionStorage.getItem(CACHE_SERVICES);
         //check if session storage have data, if true return else call API

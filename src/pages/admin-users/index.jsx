@@ -218,7 +218,7 @@ const AdminUsers = () => {
                                         isSuccess={displayMessage.isSuccess}/>
                         <Loading isActive={displayMessage.loading} />
                         <ModalEdit openEdit={modalOpen.openEdit} selectedUser={selectedUser} onClose={()=>setModalOpen({...modalOpen, openEdit: false})} onChangeUpdateUser={(payload)=>setSelectedUser(payload)} onClickUpdateUserHandler={onClickUpdateUserHandler}/>
-                        <AdminModalAdd openAdd={modalOpen.openAdd} onClose={()=>setModalOpen({...modalOpen, openAdd: false})} addUser={addUser} onChangeUpdateUser={(payload)=>setAddUser(payload)} onClickAddUserHandler={onClickAddUserHandler}/>
+                     {/*   <AdminModalAdd openAdd={modalOpen.openAdd} onClose={()=>setModalOpen({...modalOpen, openAdd: false})} addUser={addUser} onChangeUpdateUser={(payload)=>setAddUser(payload)} onClickAddUserHandler={onClickAddUserHandler}/>*/}
                         <UserTables getUserList={usersProperty.users} headerCell={USERS_HEADER} onClickEdit={(payload)=> {setSelectedUser(payload) ; setModalOpen({...modalOpen, openEdit: true})}} />
                         <div className="flex flex-col items-center">
               <span className="text-xl text-gray-700 dark:text-gray-400">

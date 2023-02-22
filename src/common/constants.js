@@ -1,12 +1,50 @@
 export const NAVIGATION = [
-    { name: "Home", href: "/", current: false },
-    { name: "Services", href: "/services", current: false },
-    { name: "Booknow", href: "/booknow", current: false },
-    { name: "Contact", href: "/contact", current: false },
+    {name: "Home", href: "/", current: false},
+    {name: "Services", href: "/services", current: false},
+    {name: "Booknow", href: "/booknow", current: false},
+    {name: "Contact", href: "/contact", current: false},
 ];
 export const ACCOUNT_TYPE_ADMIN = 1;
 export const ACCOUNT_TYPE_AGENT = 2;
 export const ACCOUNT_TYPE_STAFF = 3;
+export const DISPLAY_INIT = {
+    isDisplay: false,
+    isMessage: '',
+    isSuccess: false,
+    loading: false
+};
+export const ORDER_STATUS = [
+    {
+        name: "Booked",
+        statusId: 1,
+    },
+    {
+        name: "Assigned",
+        statusId: 2,
+    },
+    {
+        name: "(Ready) Not Paid",
+        statusId: 3,
+    },
+    {
+        name: "Paid",
+        statusId: 4,
+    },
+    {
+        name: "Refunded",
+        statusId: 5,
+    },
+    {
+        name: "Canceled",
+        statusId: 6,
+    }
+];
+export const ADMIN_ORDER_SEARCH_LIST = [
+    "Name",
+    "OrderID",
+    "Email",
+    "Address"
+];
 export const DASHBOARD_LABEL = [
     "unpaid",
     "paid",
@@ -42,9 +80,9 @@ export const USER_ROLES = [
         role: 'Photographer'
     }
 ]
-export const ORDER_HISTORY_HEADER = ['order #','Order Date','Schedule Time','Destination','Property Information','Services','Comments','Status',''];
-export const SERVICES_HEADER = ['ID','Property Size','Product Name','Price','Status',''];
-export const USERS_HEADER = ['Name','Email','Account Type','Phone','Status',''];
+export const ORDER_HISTORY_HEADER = ['order #', 'Order Date', 'Schedule Time', 'Destination', 'Property Information', 'Services', 'Comments', 'Status', ''];
+export const SERVICES_HEADER = ['ID', 'Property Size', 'Product Name', 'Price', 'Status', ''];
+export const USERS_HEADER = ['Name', 'Email', 'Account Type', 'Phone', 'Status', ''];
 export const initialState = {
     isLoggedIn: false, userName: "", email: "", phone: "", accountType: "", sessionToken: "", initial: ""
 };
@@ -81,7 +119,8 @@ export const STEPPER_INFO = [
 
 export const HTTP_HEADER = {
     "Content-Type": "application/json",
-    "Accept": "application/json"
+    "Accept": "application/json",
+    "x-api-key": process.env.REACT_APP_X_API_KEY
 };
 
 export const SERVICE_TYPE_PHOTO_TITLE = "Photo";
@@ -106,8 +145,8 @@ export const SERVICE_TYPE_PHOTO_IMAGE = "https://repro.nyc3.digitaloceanspaces.c
 export const SERVICE_TYPE_VIDEO_IMAGE = "https://repro.nyc3.digitaloceanspaces.com/photos/order/160622-4680-0001/1655433999959-IMG_20190219_195302.jpg";
 export const HTTP_TIMEOUT = 30000;
 export const WAIT_EXECUTE = 5000;
-export const LOG_IN ='LOG_IN';
-export const LOG_OUT ='LOG_OUT';
+export const LOG_IN = 'LOG_IN';
+export const LOG_OUT = 'LOG_OUT';
 export const SESSION_USER = 'SESSION_USER';
 export const SESSION_ORDER = 'SESSION_ORDER';
 export const CACHE_SERVICES = 'CACHE_SERVICES';
@@ -135,12 +174,12 @@ export const ACTION_SET_CHECKED_SERVICES = 'ACTION_SET_CHECKED_SERVICES';
 
 export const MESSAGE_SUCCESS_FORGOT_PWD = 'Password reset Email has send to your mail box';
 export const MESSAGE_SUCCESS_CREATE_ORDER = 'Order was created successful, please check your email for invoice and we will contact you as soon as possible';
-export const MESSAGE_SUCCESS_REGISTER= 'Account was created, please check email to activate account';
-export const MESSAGE_SUCCESS_UPDATE_PRODUCT= 'Product Service Updated Successfully';
-export const MESSAGE_SUCCESS_UPDATE_USER= 'User Updated Successfully';
-export const MESSAGE_SUCCESS_UPDATE= 'Updated Successfully';
-export const MESSAGE_SERVER_ERROR= 'We are experiencing technical difficulties, please try again later';
-export const MESSAGE_UNAUTHORIZED= 'You are unauthorized or login expired, please try and login';
+export const MESSAGE_SUCCESS_REGISTER = 'Account was created, please check email to activate account';
+export const MESSAGE_SUCCESS_UPDATE_PRODUCT = 'Product Service Updated Successfully';
+export const MESSAGE_SUCCESS_UPDATE_USER = 'User Updated Successfully';
+export const MESSAGE_SUCCESS_UPDATE = 'Updated Successfully';
+export const MESSAGE_SERVER_ERROR = 'We are experiencing technical difficulties, please try again later';
+export const MESSAGE_UNAUTHORIZED = 'You are unauthorized or login expired, please try and login';
 
 export const MESSAGE_SUCCESS_CONTACT_US = 'We have recieved your message, will get back to you as soon as possible';
 export const STEP_PROPERTY_INFO = 1;

@@ -1,4 +1,4 @@
-import {Alert, Modal, Spinner} from "flowbite-react";
+import {Alert, Modal, Spinner, Toast} from "flowbite-react";
 import {httpCommonGet} from "../api/http-request";
 import {PAGE_LOG_IN, SESSION_ORDER, SESSION_USER, UNAUTHORIZED_CODE, WAIT_EXECUTE} from "./constants";
 
@@ -25,13 +25,13 @@ export const Loading = ({isActive}) => {
 
 export const DisplayMessage = ({isMessage, isSuccess, isDisplay}) => {
     return (<>
-            {isDisplay ? (<Alert
+            {isDisplay ? ( <Toast><Alert
                 color={isSuccess ? "success" : "failure"}
             >
   <span>
       {isMessage}
   </span>
-            </Alert>) : <></>} </>
+            </Alert><Toast.Toggle /></Toast>) : <></>} </>
     )
 }
 export const FetchDataCache = async (cacheName, url) => {
@@ -45,7 +45,7 @@ export const FetchDataCache = async (cacheName, url) => {
 
 export const UnauthorizedLogout = (isCode,navigate) =>{
     if (isCode === UNAUTHORIZED_CODE) {
-        console.log('LOGOUT')
+        console.log()
         setTimeout(function () {
             sessionStorage.removeItem(SESSION_USER);
             sessionStorage.removeItem(SESSION_ORDER);

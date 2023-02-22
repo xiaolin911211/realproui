@@ -1,12 +1,7 @@
 import {useContext, useState} from "react";
 import {ContextBookNow, UserContext} from "../../contexts/context";
 import {httpCommonPost} from "../../api/http-request";
-import {
-    MESSAGE_SERVER_ERROR,
-    MESSAGE_SUCCESS_CREATE_ORDER,
-    PAGE_LOG_IN, SESSION_ORDER, SESSION_USER,
-    UNAUTHORIZED_CODE, WAIT_EXECUTE
-} from "../../common/constants";
+import {MESSAGE_SERVER_ERROR, MESSAGE_SUCCESS_CREATE_ORDER} from "../../common/constants";
 import {Loading, UnauthorizedLogout} from "../../common/sharedComponent";
 import {Button} from "flowbite-react";
 import {useNavigate} from "react-router-dom";

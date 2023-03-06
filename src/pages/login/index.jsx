@@ -1,47 +1,42 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../contexts/context";
-import {LOG_IN, MESSAGE_SERVER_ERROR, PAGE_REGISTRATION} from "../../common/constants";
-import {httpCommonPost} from "../../api/http-request";
-import {DisplayMessage, Loading} from "../../common/sharedComponent";
+import {DISPLAY_INIT, LOG_IN, METHOD_POST, PAGE_REGISTRATION} from "../../common/constants";
+import {CommonLoadHttp, DisplayMessage, Loading} from "../../common/sharedComponent";
 import {useNavigate} from 'react-router-dom';
 import {Button} from "flowbite-react";
+import {BTN_WIDE, INPUT_BLUE_BG} from "../../common/css-constant";
 
 const Login = () => {
     const navigate = useNavigate();
-    const { dispatch }  = useContext(UserContext);
-     const [displayMessage, setDisplayMessage] = useState({
-        isDisplay: false,
-        isMessage: '',
-        isSuccess: false,
-        loading: false
-    })
+    const {dispatch} = useContext(UserContext);
+    const [displayMessage, setDisplayMessage] = useState(DISPLAY_INIT)
     const [loginCredential, setLoginCredential] = useState({
         email: '',
         password: ''
     });
     const onClickCreateAccount = (e) => {
         e.preventDefault();
-        navigate(PAGE_REGISTRATION,{replace: true})
-    }
+        navigate(PAGE_REGISTRATION, {replace: true})
+    };
     const onSubmitLogin = async (e) => {
         e.preventDefault();
-        setDisplayMessage({...displayMessage, 'loading': true});
-        const loginResponse = await httpCommonPost(process.env.REACT_APP_BASE_PATH + process.env.REACT_APP_URL_LOGIN,loginCredential);
-        const [isSuccess, isMessage, loginData] = [loginResponse?.data?.success, loginResponse?.data?.msg ,loginResponse?.data?.data?.user];
-        setDisplayMessage({...displayMessage, 'loading': false});
 
-        if (isSuccess) {
-            dispatch({type: LOG_IN, user: loginData});
-            navigate('/',{replace: true})
-        }
-        else {
-            setDisplayMessage({
-                isDisplay: true,
-                isMessage: isMessage === undefined ? MESSAGE_SERVER_ERROR: isMessage,
-                isSuccess: false
-            })
-        }
+        const httpResponse = await CommonLoadHttp({
+            url:process.env.REACT_APP_URL_LOGIN,
+            displayMessage,
+            setDisplayMessage,
+            request:loginCredential,
+            token: '',
+            method: METHOD_POST,
+            isDisplay: true,
+            customPageMessage:'',
+            navigate
+        });
+        if (httpResponse.isSuccess) {
 
+            dispatch({type: LOG_IN, user: httpResponse.isData?.data?.user});
+            navigate('/', {replace: true})
+        }
     };
 
     return (
@@ -58,11 +53,12 @@ const Login = () => {
 
                     <div
                         className="bg-white shadow-md border border-gray-200 rounded-lg max-w-sm p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
-                        <DisplayMessage isDisplay={displayMessage.isDisplay} isMessage={displayMessage.isMessage} isSuccess={displayMessage.isSuccess}/>
+                        <DisplayMessage isDisplay={displayMessage.isDisplay} isMessage={displayMessage.isMessage}
+                                        isSuccess={displayMessage.isSuccess}/>
                         <div className="flex justify-center items-center flex-wrap h-full g-6 text-gray-800">
                             <h1 className="dark:text-white block w-full text-center text-gray-800 text-2xl font-bold mb-6">RealPro
                                 Inc.</h1>
-                            <div >
+                            <div>
 
                                 <div className="mb-6">
                                     <label
@@ -71,10 +67,13 @@ const Login = () => {
                                         type="text"
                                         name="email"
                                         id="email"
-                                        className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-blue-50 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                        className={INPUT_BLUE_BG}
                                         placeholder="Email address"
                                         value={loginCredential.email}
-                                        onChange={(e)=>setLoginCredential({...loginCredential, 'email': e.target.value})}
+                                        onChange={(e) => setLoginCredential({
+                                            ...loginCredential,
+                                            'email': e.target.value
+                                        })}
                                     />
                                 </div>
 
@@ -85,10 +84,13 @@ const Login = () => {
                                         type="password"
                                         name="password"
                                         id="password"
-                                        className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-blue-50 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                        className={INPUT_BLUE_BG}
                                         placeholder="Password"
                                         value={loginCredential.password}
-                                        onChange={(e)=>setLoginCredential({...loginCredential, 'password': e.target.value})}
+                                        onChange={(e) => setLoginCredential({
+                                            ...loginCredential,
+                                            'password': e.target.value
+                                        })}
                                     />
                                 </div>
 
@@ -101,12 +103,14 @@ const Login = () => {
                                     >
                                 </div>
 
-                                <Loading isActive={displayMessage.loading} />
+                                <Loading isActive={displayMessage.loading}/>
 
                                 <Button
                                     onClick={onSubmitLogin}
+                                    color="dark"
+                                    pill={true}
                                     type="submit"
-                                    className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
+                                    className={BTN_WIDE}
                                     data-mdb-ripple="true"
                                     data-mdb-ripple-color="light"
                                 >
@@ -121,11 +125,12 @@ const Login = () => {
 
                                 <Button
                                     onClick={onClickCreateAccount}
-                                    color="purple"                          t
-                                        type="submit"
-                                        className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
-                                        data-mdb-ripple="true"
-                                        data-mdb-ripple-color="light">
+                                    color="purple"
+                                    pill={true} t
+                                    type="submit"
+                                    className={BTN_WIDE}
+                                    data-mdb-ripple="true"
+                                    data-mdb-ripple-color="light">
                                     CREATE AN ACCOUNT
                                 </Button>
 

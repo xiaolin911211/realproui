@@ -82,6 +82,8 @@ const AssignOrderModal = ({assignOpen, onClose, selectedEvent,setSelectedEvent, 
                     </select>
                     <div className="grid grid-rows-1 grid-flow-col gap-4">
                     <Button
+                        color="dark"
+                        pill={true}
                         onClick={onClickUpdateAssign}
                     >
                         Confirm

@@ -1,5 +1,5 @@
 import {createContext, useEffect, useReducer} from "react";
-import {initialState, initialStateBookNow, initialStateOrder, SESSION_ORDER, SESSION_USER} from "../common/constants";
+import {initialState, INITIAL_STATE_BOOKNOW, initialStateOrder, SESSION_ORDER, SESSION_USER} from "../common/constants";
 import {bookNowReducer, orderReducer, userReducer} from "./reducers";
 
 
@@ -26,7 +26,7 @@ export const UserProvider = ({children}) => {
 export const ContextBookNow = createContext(null);
 
 export const BookNowProvider = ({children}) => {
-    const [stateBookNow, dispatchBookNow] = useReducer(bookNowReducer, initialStateBookNow);
+    const [stateBookNow, dispatchBookNow] = useReducer(bookNowReducer, INITIAL_STATE_BOOKNOW);
     return (<ContextBookNow.Provider value={{stateBookNow, dispatchBookNow}}>
         {children}
     </ContextBookNow.Provider>);

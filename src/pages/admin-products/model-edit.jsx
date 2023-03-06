@@ -1,7 +1,7 @@
-import {Modal} from "flowbite-react";
+import {Button, Label, Modal} from "flowbite-react";
 
 
-const AdminProductsModel = ({editOpenStatus, onClickOpenStatus, selectedServices, onChangeUpdateProduct,onClickUpdateProduct}) =>{
+const AdminProductsModalEdit = ({editOpenStatus, onClickOpenStatus, selectedServices, onChangeUpdateProduct,onClickUpdateProduct}) =>{
 
     return(
         <Modal show={editOpenStatus} size="md" popup onClose={() => onClickOpenStatus(false)}>
@@ -11,9 +11,9 @@ const AdminProductsModel = ({editOpenStatus, onClickOpenStatus, selectedServices
                         Update Product
                     </h3>
                     <div className="flex flex-col mb-4">
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300" >
+                        <Label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300" >
                             ProductID
-                        </label>
+                        </Label>
 
                         <input
                             className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-blue-50 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
@@ -25,9 +25,9 @@ const AdminProductsModel = ({editOpenStatus, onClickOpenStatus, selectedServices
                         />
                     </div>
                     <div className="flex flex-col mb-4">
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300" >
+                        <Label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300" >
                             Property Size
-                        </label>
+                        </Label>
 
                         <input
                             className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-blue-50 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
@@ -39,9 +39,9 @@ const AdminProductsModel = ({editOpenStatus, onClickOpenStatus, selectedServices
                         />
                     </div>
                     <div className="flex flex-col mb-4">
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                        <Label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                             Product Name
-                        </label>
+                        </Label>
                         <input
                             className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-blue-50 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                             type="text"
@@ -52,9 +52,9 @@ const AdminProductsModel = ({editOpenStatus, onClickOpenStatus, selectedServices
                         />
                     </div>
                     <div className="flex flex-col mb-4">
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                        <Label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                             Price
-                        </label>
+                        </Label>
                         <input
                             className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-blue-50 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                             type="text"
@@ -65,9 +65,9 @@ const AdminProductsModel = ({editOpenStatus, onClickOpenStatus, selectedServices
                         />
                     </div>
                     <div className="flex flex-col mb-4">
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                        <Label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                             Status
-                        </label>
+                        </Label>
                         <select
                             id="propertyStatus"
                             onChange={(e)=>onChangeUpdateProduct({...selectedServices, active: parseInt(e.target.value)})}
@@ -84,26 +84,29 @@ const AdminProductsModel = ({editOpenStatus, onClickOpenStatus, selectedServices
 
                         </select>
                     </div>
-
-                    <button
+                    <div className="grid gap-6 mb-6 lg:grid-cols-2">
+                    <Button
                         data-modal-toggle="popup-modal"
                         type="button"
                         onClick={onClickUpdateProduct}
-                        className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
+                        color="dark"
+                        pill={true}
                     >
                         Yes, I'm sure
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         data-modal-toggle="popup-modal"
                         type="button"
                         onClick={() => onClickOpenStatus(false)}
-                        className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                        color="failure"
+                        pill={true}
                     >
                         No, cancel
-                    </button>
+                    </Button>
+                    </div>
                 </div>
             </Modal.Body>
         </Modal>
     );
 };
-export default AdminProductsModel;
+export default AdminProductsModalEdit;

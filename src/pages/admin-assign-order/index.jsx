@@ -6,7 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import {UserContext} from "../../contexts/context";
 import {httpCommonGet, httpCommonPost} from "../../api/http-request";
 import {
-    ACCOUNT_TYPE_ADMIN, ACCOUNT_TYPE_STAFF,
+    ACCOUNT_TYPE_ADMIN, ACCOUNT_TYPE_STAFF, DISPLAY_INIT,
 
     MESSAGE_SERVER_ERROR, MESSAGE_SUCCESS_UPDATE,
     MESSAGE_UNAUTHORIZED, STATUS_ACTIVE,
@@ -14,8 +14,8 @@ import {
     UNAUTHORIZED_CODE
 } from "../../common/constants";
 import {useNavigate} from "react-router-dom";
-import AssignOrderModal from "./modal";
-import {DisplayMessage, UnauthorizedLogout} from "../../common/sharedComponent";
+import AssignOrderModal from "./modal-edit";
+import {DisplayMessage, DisplayMessagesToUI, UnauthorizedLogout} from "../../common/sharedComponent";
 
 const localizer = momentLocalizer(moment);
 const AdminAssignOrder = () => {
@@ -32,12 +32,7 @@ const AdminAssignOrder = () => {
     useEffect(()=>{
         fetchOrderAndUserData();
     },[pagination]);
-    const [displayMessage, setDisplayMessage] = useState({
-        isDisplay: false,
-        isMessage: '',
-        isSuccess: false,
-        loading: false
-    });
+    const [displayMessage, setDisplayMessage] = useState(DISPLAY_INIT);
 
 
     const fetchOrderAndUserData = async () => {
@@ -94,14 +89,7 @@ const AdminAssignOrder = () => {
             }
             setEvents(filterOrderHistory);
         } else {
-            setDisplayMessage({
-                isDisplay: true,
-                isMessage: isCode === UNAUTHORIZED_CODE ? MESSAGE_UNAUTHORIZED : (isMessage === undefined ? MESSAGE_SERVER_ERROR : isMessage),
-                isSuccess: isSuccess,
-                loading: false
-            });
-            // if unauthorized then log out
-            UnauthorizedLogout(isCode,navigate);
+            DisplayMessagesToUI({setDisplayMessage,isDisplay: true, isSuccess : isSuccess,isCode,isMessage,customPageMessage:MESSAGE_SERVER_ERROR,navigate});
         }
     };
     const onSelectCalendar = (e) =>{
@@ -111,7 +99,7 @@ const AdminAssignOrder = () => {
         }
     };
     const onSelectEventHandler = (e) =>{
-        console.log('Event ',e);
+
         const selectEventValue = e;
         selectEventValue.assignStaff = '';
         setSelectedEvent(selectEventValue);
@@ -134,14 +122,7 @@ const AdminAssignOrder = () => {
                 userId: state.userId
             })
         }
-        setDisplayMessage({
-            isDisplay: true,
-            isMessage: isSuccess ? MESSAGE_SUCCESS_UPDATE : (isCode === UNAUTHORIZED_CODE ? MESSAGE_UNAUTHORIZED : (isMessage === undefined ? MESSAGE_SERVER_ERROR : isMessage)),
-            isSuccess: isSuccess,
-            loading: false
-        });
-        // if unauthorized then log out
-        UnauthorizedLogout(isCode,navigate);
+        DisplayMessagesToUI({setDisplayMessage,isDisplay: true, isSuccess : isSuccess,isCode,isMessage,customPageMessage:MESSAGE_SUCCESS_UPDATE,navigate});
     };
     return (
         <section>

@@ -1,6 +1,7 @@
 import {Button, Table} from "flowbite-react";
 
-const Tables = ({getOrderList,openOrderDetailHandler,headerCell, label}) =>{
+const Tables = ({getOrderList,openOrderDetailHandler,headerCell, label, userList}) =>{
+ 
 
     return (<>
     <Table hoverable={true} striped={true}>
@@ -13,7 +14,8 @@ const Tables = ({getOrderList,openOrderDetailHandler,headerCell, label}) =>{
                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                     <Table.Cell>{row?.orderId}</Table.Cell>
                     <Table.Cell>{row?.created}</Table.Cell>
-                    <Table.Cell>{row?.scheduleTime}</Table.Cell>
+                    <Table.Cell>{userList?.filter((item=>item.userId===row?.userId))[0].firstName + ' ' + userList?.filter((item=>item.userId===row?.userId))[0].lastName}</Table.Cell>
+                    <Table.Cell>{row?.scheduleDate + ' ' + row?.arriveTime}</Table.Cell>
                     <Table.Cell>
                         {row?.address?.unitNumber +
                             " - " +
@@ -38,8 +40,11 @@ const Tables = ({getOrderList,openOrderDetailHandler,headerCell, label}) =>{
                         ))}
                     </Table.Cell>
                     <Table.Cell>
+                       ${row?.payment?.totalBeforeTax}
+                    </Table.Cell>
+                    <Table.Cell>
                         {" "}
-                        {row?.accessCode} {row?.note}
+                        {row?.note}
                     </Table.Cell>
                     <Table.Cell> {row?.status?.name}</Table.Cell>
                     <Table.Cell>

@@ -1,89 +1,34 @@
-import {useContext, useState} from "react";
+import {useContext} from "react";
 import {ContextBookNow, UserContext} from "../../contexts/context";
-import {httpCommonPost} from "../../api/http-request";
-import {MESSAGE_SERVER_ERROR, MESSAGE_SUCCESS_CREATE_ORDER} from "../../common/constants";
-import {Loading, UnauthorizedLogout} from "../../common/sharedComponent";
+import {COMMON_CREATE_ORDER_REQUEST} from "../../common/constants";
+import {CommonLoadHttp, Loading} from "../../common/sharedComponent";
 import {Button} from "flowbite-react";
-import {useNavigate} from "react-router-dom";
+import CartProducts from './cart-products';
 
-const Confirmation = ({propertyData, confirmationCallBackMessage,disableButton}) => {
+const Confirmation = ({propertyData,disableButton, displayMessage, setDisplayMessage}) => {
     const {stateBookNow} = useContext(ContextBookNow);
     const {state} = useContext(UserContext);
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
-    const addingSelectedProductId = () =>{
-        const extraItemSelected = stateBookNow.checkedService;
-        const tempPropertyServiceSelected = [];
-        tempPropertyServiceSelected.push(stateBookNow.selectPropertyService);
-        for (const item of extraItemSelected){
-            tempPropertyServiceSelected.push(item);
-        }
+    const currentDate = new Date();
 
-        return tempPropertyServiceSelected;
-    };
+
     const onClickCreateOrder = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        const createPrderResponse = await httpCommonPost(process.env.REACT_APP_BASE_PATH + process.env.REACT_APP_URL_POST_CREATE_ORDER,
-            {
-                productId: addingSelectedProductId(),
-                address: {
-                    unitNumber: stateBookNow.unitNumber,
-                    streetNumber: stateBookNow.streetNumber,
-                    streetName: stateBookNow.streetName,
-                    city: stateBookNow.selectPropertyRegion,
-                    propertyTypeId: stateBookNow.selectPropertyType,
-                    propertySize: stateBookNow.selectPropertySize,
-                    postalCode: stateBookNow.postalCode,
-                    province: stateBookNow.province,
-                },
-                scheduleTime: stateBookNow.serviceDatetime,
-                isVacant: stateBookNow.vacant,
-                note: stateBookNow.additionalComments,
-                accessCode: stateBookNow.lockBoxPwd,
-                userId: state.userId,
-            },state.sessionToken);
-        setLoading(false);
-        const [isSuccess, isMessage,isCode] = [createPrderResponse?.data?.success, createPrderResponse?.data?.msg, createPrderResponse?.data?.code];
-
-        confirmationCallBackMessage({
-            isDisplay: true,
-            isMessage: isSuccess ? MESSAGE_SUCCESS_CREATE_ORDER: (isMessage === undefined ? MESSAGE_SERVER_ERROR : isMessage),
-            isSuccess: isSuccess
-
-        });
-
-        UnauthorizedLogout(isCode,navigate);
+        await CommonLoadHttp(COMMON_CREATE_ORDER_REQUEST({displayMessage,setDisplayMessage,stateBookNow,state}));
     }
 
     return (
         <>
-            <Loading isActive={loading} />
+            <Loading isActive={displayMessage.loading} />
             <div className="py-14 px-14 md:px-10 2xl:px-20 2xl:container 2xl:mx-auto dark:bg-gray-800 rounded-lg ">
-                <div className="grid grid-cols-6 gap-4">
-                    <div
-                        className={
-                            "dark:text-white flex flex-col justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full rounded-lg "
-                        }
-                    >
-                        <img src="/FacebookLogo.png" alt="Flowbite Logo"/>
-                        RealPro Inc.
-                        <p className="text-sm dark:text-white leading-none text-gray-800">
-                          <span className="dark:text-gray-400 text-gray-300">
-                            291 N 4th St, San Jose, CA 95112, USA
-                          </span>
-                        </p>
-                        <p className="text-sm dark:text-white leading-none text-gray-800">
-                          <span className="dark:text-gray-400 text-gray-300">
-                            <br></br>
-                              {new Date().toJSON()}
-                          </span>
-                        </p>
-                    </div>
 
+                    <div className="flex justify-start item-start space-y-2 flex-col">
+                        <h1 className="text-3xl dark:text-white lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800">Order
+                            Confirmation</h1>
+                        <p className="text-base dark:text-gray-300 font-medium leading-6 text-gray-600">{currentDate.toISOString().split('T')[0] + " "+currentDate.toLocaleTimeString()}</p>
+                    </div>
                     <div className="col-start-1 col-end-7 ..."></div>
 
-                </div>
+
                 <div
                     className="mt-10 flex flex-col xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
                     <div className="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
@@ -93,77 +38,7 @@ const Confirmation = ({propertyData, confirmationCallBackMessage,disableButton})
                                 Customer’s Cart
                             </p>
 
-                            <div
-                                className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
-                                <div className="pb-4 md:pb-8 w-full md:w-40">
-                                    <img
-                                        className="w-full hidden md:block"
-                                        src={
-                                            propertyData?.servicesData?.data?.filter(
-                                                (item) => item.propertySizeId === stateBookNow.selectPropertySize
-                                            )[0]?.image
-                                        }
-                                    />
-                                </div>
-                                <div
-                                    className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
-                                    <div className="w-full flex flex-col justify-start items-start space-y-8">
-                                        <h3 className="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">
-                                            {
-                                                stateBookNow.propertyServices?.data?.filter(
-                                                    (item) => item.productId === stateBookNow.selectPropertyService
-                                                )[0]?.productName
-                                            }
-                                        </h3>
-                                    </div>
-                                    <div className="flex justify-between space-x-8 items-start w-full">
-                                        <p className="text-base dark:text-white xl:text-lg leading-6 text-gray-800">
-                                            01
-                                        </p>
-                                        <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">
-                                            $
-                                            {
-                                                stateBookNow.propertyServices?.data?.filter(
-                                                    (item) => item.productId === stateBookNow.selectPropertyService
-                                                )[0]?.price
-                                            }
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            {stateBookNow.displayCheckService?.map((item, index) => (
-                                <div
-                                    className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
-                                    <div className="pb-4 md:pb-8 w-full md:w-40">
-                                        <img
-                                            className="w-full hidden md:block"
-                                            src={
-                                                propertyData?.servicesData.data?.filter(
-                                                    (item) =>
-                                                        item.propertySizeId === stateBookNow.selectPropertySize
-                                                )[0]?.image
-                                            }
-                                            alt="dress"
-                                        />
-                                    </div>
-                                    <div
-                                        className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
-                                        <div className="w-full flex flex-col justify-start items-start space-y-8">
-                                            <h3 className="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">
-                                                {item.productName} (Extra Service)
-                                            </h3>
-                                        </div>
-                                        <div className="flex justify-between space-x-8 items-start w-full">
-                                            <p className="text-base dark:text-white xl:text-lg leading-6 text-gray-800">
-                                                01
-                                            </p>
-                                            <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">
-                                                ${item.price}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                            <CartProducts  propertyData = {propertyData} stateBookNow = {stateBookNow}/>
                         </div>
                     </div>
 
@@ -274,25 +149,12 @@ const Confirmation = ({propertyData, confirmationCallBackMessage,disableButton})
                                         </p>
                                         <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
                                   <span className="dark:text-white">
-                                    Requested Schedule Time:{" "}
+                                    Requested Schedule Date Time:{" "}
                                   </span>
-                                            {/*{stateBookNow.serviceDatetime}*/}
-                                        </p>
+                                            {stateBookNow.serviceDatetime.toISOString().slice(0, 10) + " " + stateBookNow.serviceArriveTime}
+                                         </p>
                                         <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
-                                  <span className="dark:text-white">
-                                    vacant:{" "}
-                                  </span>
-                                            {stateBookNow.vacant
-                                                ? "Owner will be away"
-                                                : "Owner will be home"}
-                                        </p>
-                                        <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
-                                  <span className="dark:text-white">
-                                    Lock Box Password:{" "}
-                                  </span>
-                                            {stateBookNow.lockBoxPwd}
-                                        </p>
-                                        <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
+                                  
                                   <span className="dark:text-white">
                                     Comments:{" "}
                                   </span>
@@ -305,9 +167,10 @@ const Confirmation = ({propertyData, confirmationCallBackMessage,disableButton})
                                  disabled={disableButton}
                                 onClick={onClickCreateOrder}
                                 type="submit"
-                                className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
                                 data-mdb-ripple="true"
                                 data-mdb-ripple-color="light"
+                                 color="dark"
+                                 pill={true}
                             >
                                 Book Confirmation
                             </Button>

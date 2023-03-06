@@ -2,11 +2,13 @@ import axios from "axios";
 import {HTTP_HEADER, HTTP_TIMEOUT} from "../common/constants";
 
 export const httpCommonPost = async (url, request,token) => {
-    console.log('token',token);
+
     const header = HTTP_HEADER;
     header.Authorization = 'Bearer ' + token;
 
     const httpRequest = JSON.stringify(request);
+
+
     try {
         const response = await axios.post(url, httpRequest, {
             headers: header,
@@ -25,7 +27,7 @@ export const httpCommonPut= async (url, request,token) => {
     header.Authorization = 'Bearer ' + token;
 
     const httpRequest = JSON.stringify(request);
-    console.log(httpRequest)
+
     try {
         const response = await axios.put(url, httpRequest, {
             headers: header,
@@ -38,9 +40,10 @@ export const httpCommonPut= async (url, request,token) => {
     }
 };
 export const httpCommonGet = async (url,uriParams,token) => {
-    console.log('uriParams ',uriParams);
+
     const header = HTTP_HEADER;
     header.Authorization = 'Bearer ' + token;
+
 
     try {
         const response = await axios.get(url, {

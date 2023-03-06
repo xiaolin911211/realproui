@@ -1,15 +1,16 @@
-import {Breadcrumb, Pagination} from "flowbite-react";
-import {httpCommonGet} from "../../api/http-request";
+import {Pagination} from "flowbite-react";
 import {useContext, useEffect, useState} from "react";
 import Tables from "../../common/tables";
 import {
     ACTION_SELECT_ORDER,
-    LOG_IN,
-    MESSAGE_SERVER_ERROR,
-    MESSAGE_UNAUTHORIZED, ORDER_HISTORY_HEADER, PAGE_LOG_IN, PAGE_ORDER_DETAIL, SESSION_ORDER, SESSION_USER,
-    TABLE_INI_PAGE_NUM, TABLE_RECORD_PER_PAGE, UNAUTHORIZED_CODE, WAIT_EXECUTE
+    DISPLAY_INIT,
+    METHOD_GET,
+    ORDER_HISTORY_HEADER,
+    PAGE_ORDER_DETAIL,
+    TABLE_INI_PAGE_NUM,
+    TABLE_RECORD_PER_PAGE
 } from "../../common/constants";
-import {DisplayMessage, UnauthorizedLogout} from "../../common/sharedComponent";
+import {CommonLoadHttp, DisplayMessage} from "../../common/sharedComponent";
 import {useNavigate} from "react-router-dom";
 import {ContextOrder, UserContext} from "../../contexts/context";
 
@@ -24,46 +25,41 @@ const OrderHistory = () => {
         pageSize: TABLE_RECORD_PER_PAGE,
         userId: state.userId
     });
-    const [displayMessage, setDisplayMessage] = useState({
-        isDisplay: false,
-        isMessage: '',
-        isSuccess: false,
-        loading: false
-    });
+    const [displayMessage, setDisplayMessage] = useState(DISPLAY_INIT);
 
     useEffect(() => {
-        fetchOrderData();
+        httpGetOrders();
+
     }, [pagination.pageNo]);
     const onPageChange = async (e) => {
         if (e <= totalPage || e > 0) {
             setPagination({...pagination, pageNo: e});
         }
     };
+
+    const httpGetOrders = async () =>{
+        const httpResponse = await CommonLoadHttp({
+            url: process.env.REACT_APP_URL_GET_ORDER,
+            displayMessage,
+            setDisplayMessage,
+            request: pagination,
+            token: state.sessionToken,
+            method: METHOD_GET,
+            isDisplay: !displayMessage.isSuccess,
+            customPageMessage: '',
+            navigate: '',
+            cache:''
+        });
+        setOrderData(httpResponse?.isData?.data)
+        setTotalPage(httpResponse?.isData?.totalPages);
+    }
     const openOrderDetailHandler = (payload) =>{
 
-        dispatchOrder({type: ACTION_SELECT_ORDER, order: {'orderId': payload?.orderId}});
+        dispatchOrder({type: ACTION_SELECT_ORDER, order: {orderId: payload?.orderId}});
         navigate(PAGE_ORDER_DETAIL,{replace: true})
     }
 
-    const fetchOrderData = async () => {
-        setDisplayMessage({...displayMessage, 'loading': true});
-        const fetchOrderDataResponse = await httpCommonGet(process.env.REACT_APP_BASE_PATH + process.env.REACT_APP_URL_GET_ORDER, pagination, state.sessionToken);
-        setDisplayMessage({...displayMessage, 'loading': false});
-        const [isSuccess, isMessage, isCode] = [fetchOrderDataResponse?.data?.success, fetchOrderDataResponse?.data?.msg, fetchOrderDataResponse?.data?.code];
-        if (isSuccess) {
-            setOrderData(fetchOrderDataResponse?.data?.data)
-            setTotalPage(fetchOrderDataResponse?.data?.totalPages);
-        } else {
-            setDisplayMessage({
-                isDisplay: true,
-                isMessage: isCode === UNAUTHORIZED_CODE ? MESSAGE_UNAUTHORIZED : (isMessage === undefined ? MESSAGE_SERVER_ERROR : isMessage),
-                isSuccess: isSuccess,
-                loading: false
-            });
-            // if unauthorized then log out
-            UnauthorizedLogout(isCode,navigate);
-        }
-    }
+
 
     return (
         <section>

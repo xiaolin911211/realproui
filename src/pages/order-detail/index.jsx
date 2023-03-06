@@ -2,7 +2,13 @@ import {Breadcrumb, Button, Carousel} from "flowbite-react";
 import {useContext, useEffect, useState} from "react";
 import {httpCommonGet} from "../../api/http-request";
 import {ContextOrder, UserContext} from "../../contexts/context";
-import {MESSAGE_SERVER_ERROR, MESSAGE_UNAUTHORIZED, PAGE_PAYMENT, UNAUTHORIZED_CODE} from "../../common/constants";
+import {
+    DISPLAY_INIT,
+    MESSAGE_SERVER_ERROR,
+    MESSAGE_UNAUTHORIZED,
+    PAGE_PAYMENT,
+    UNAUTHORIZED_CODE
+} from "../../common/constants";
 import {useNavigate} from "react-router-dom";
 import {DisplayMessage, UnauthorizedLogout} from "../../common/sharedComponent";
 import {BsFillCartCheckFill} from "react-icons/bs";
@@ -55,12 +61,7 @@ const OrderDetail = () => {
     const {stateOrder} = useContext(ContextOrder);
     const navigate = useNavigate();
     const [images, setImages] = useState([]);
-    const [displayMessage, setDisplayMessage] = useState({
-        isDisplay: false,
-        isMessage: '',
-        isSuccess: false,
-        loading: false
-    });
+    const [displayMessage, setDisplayMessage] = useState(DISPLAY_INIT);
     useEffect(() => {
         getOrderImages();
     }, []);

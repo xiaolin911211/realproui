@@ -2,20 +2,19 @@ import SidebarAdmin from "../../navigation/sidebar";
 import UserTables from "./tables";
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../contexts/context";
-import {httpCommonGet, httpCommonPost, httpCommonPut} from "../../api/http-request";
+import {httpCommonGet, httpCommonPost} from "../../api/http-request";
 import {
-    MESSAGE_SERVER_ERROR, MESSAGE_SUCCESS_UPDATE_USER, MESSAGE_UNAUTHORIZED, PAGE_LOG_IN, SESSION_ORDER, SESSION_USER,
+    DISPLAY_INIT,
+    MESSAGE_SUCCESS_UPDATE_USER,
     TABLE_INI_PAGE_NUM,
     TABLE_RECORD_PER_PAGE,
-    UNAUTHORIZED_CODE,
     USERS_HEADER
 } from "../../common/constants";
 import {Button, Pagination} from "flowbite-react";
-import {DisplayMessage, Loading, UnauthorizedLogout} from "../../common/sharedComponent";
+import {DisplayMessage, DisplayMessagesToUI, Loading} from "../../common/sharedComponent";
 import ModalEdit from "./modal-edit";
 import {useNavigate} from "react-router-dom";
-import AdminModalAdd from "./modal-add";
-import { HiUserAdd } from "react-icons/hi";
+import {HiUserAdd} from "react-icons/hi";
 
 const AdminUsers = () => {
     const {state} = useContext(UserContext);
@@ -32,12 +31,7 @@ const AdminUsers = () => {
         onSelectAccountType: 'default',
         userSearchInput: ''
     });
-    const [displayMessage, setDisplayMessage] = useState({
-        isDisplay: false,
-        isMessage: '',
-        isSuccess: false,
-        loading: false
-    });
+    const [displayMessage, setDisplayMessage] = useState(DISPLAY_INIT);
 
     const [addUser, setAddUser] = useState(
         {
@@ -84,7 +78,7 @@ const AdminUsers = () => {
             });
         }
         else {
-            displayMessageAndRedirect(isSuccess, isMessage, isCode);
+            DisplayMessagesToUI({setDisplayMessage,isDisplay: true, isSuccess : isSuccess,isCode,isMessage,customPageMessage:MESSAGE_SUCCESS_UPDATE_USER,navigate});
         }
     };
     const onChangeSearchUser = (e) =>{
@@ -121,7 +115,7 @@ const AdminUsers = () => {
         if (isSuccess){
             await fetchUserInformation();
         }
-        displayMessageAndRedirect(isSuccess, isMessage, isCode);
+        DisplayMessagesToUI({setDisplayMessage,isDisplay: true, isSuccess : isSuccess,isCode,isMessage,customPageMessage:MESSAGE_SUCCESS_UPDATE_USER,navigate});
     };
     const onClickAddUserHandler = async () =>{
         setModalOpen({...modalOpen, openAdd: false});
@@ -132,19 +126,9 @@ const AdminUsers = () => {
         if (isSuccess){
             await fetchUserInformation();
         }
-        displayMessageAndRedirect(isSuccess, isMessage, isCode);
+        DisplayMessagesToUI({setDisplayMessage,isDisplay: true, isSuccess : isSuccess,isCode,isMessage,customPageMessage:MESSAGE_SUCCESS_UPDATE_USER,navigate});
     }
 
-    const displayMessageAndRedirect = (isSuccess, isMessage,isCode) =>{
-        setDisplayMessage({
-            isDisplay: true,
-            isMessage: isSuccess ? MESSAGE_SUCCESS_UPDATE_USER : (isCode === UNAUTHORIZED_CODE ? MESSAGE_UNAUTHORIZED : (isMessage === undefined ? MESSAGE_SERVER_ERROR : isMessage)),
-            isSuccess: isSuccess,
-            loading: false
-        });
-        // if unauthorized then log out
-        UnauthorizedLogout(isCode,navigate);
-    }
     return (
         <section>
             <div className="flex ...">

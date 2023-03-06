@@ -1,5 +1,6 @@
 import {Button} from "flowbite-react";
 import {STEP_CONFIRMATION, STEP_PROPERTY_INFO} from "../../common/constants";
+import {HiUserAdd} from "react-icons/hi";
 
 export const Stepper = ({steps, heading, itemId}) => {
     return (
@@ -21,12 +22,8 @@ export const StepperButton = ({steps, button, onShow,disablePrevious}) => {
         {!((steps === STEP_PROPERTY_INFO && button === 'Previous') || (steps === STEP_CONFIRMATION && button === 'Next')) ?
             <Button
                 disabled={disablePrevious}
-                className="text-base hover:scale-110 focus:outline-none flex justify-center px-4 py-2 rounded font-bold cursor-pointer
-        hover:bg-gray-200
-        bg-gray-100
-        text-gray-700
-        border duration-200 ease-in-out
-        border-gray-600 transition"
+                color="dark"
+                pill={true}
                 onClick={onShow}
             >
                 {button}

@@ -1,21 +1,25 @@
 import SidebarAdmin from "../../navigation/sidebar";
 import {Card} from "flowbite-react";
-import { Doughnut } from "react-chartjs-2";
-import Chart from "chart.js/auto";
+import {Doughnut} from "react-chartjs-2";
 import {useNavigate} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../contexts/context";
 import {httpCommonGet} from "../../api/http-request";
+import Chart from "chart.js/auto";
 import {
-    ACCOUNT_TYPE_ADMIN, ACCOUNT_TYPE_AGENT, ACCOUNT_TYPE_STAFF,
-    DASHBOARD_BG_COLOR, DASHBOARD_HOVER_COLOR,
-    DASHBOARD_LABEL, DASHBOARD_USER_LABEL,
-    MESSAGE_SERVER_ERROR,
-    MESSAGE_UNAUTHORIZED,
-    UNAUTHORIZED_CODE
+    ACCOUNT_TYPE_ADMIN,
+    ACCOUNT_TYPE_AGENT,
+    ACCOUNT_TYPE_STAFF,
+    DASHBOARD_BG_COLOR,
+    DASHBOARD_HOVER_COLOR,
+    DASHBOARD_LABEL,
+    DASHBOARD_USER_LABEL,
+    DISPLAY_INIT,
+    MESSAGE_SERVER_ERROR
 } from "../../common/constants";
-import {UnauthorizedLogout} from "../../common/sharedComponent";
+import {DisplayMessagesToUI} from "../../common/sharedComponent";
 import {FcBearish, FcBullish, FcMoneyTransfer} from "react-icons/fc";
+
 const AdminDashboard = () =>{
     const navigate = useNavigate();
     const {state} = useContext(UserContext);
@@ -43,12 +47,7 @@ const AdminDashboard = () =>{
     useEffect(()=>{
         fetchDashboardData();
     },[]);
-    const [displayMessage, setDisplayMessage] = useState({
-        isDisplay: false,
-        isMessage: '',
-        isSuccess: false,
-        loading: false
-    });
+    const [displayMessage, setDisplayMessage] = useState(DISPLAY_INIT);
 
     const fetchDashboardData = async () => {
         setDisplayMessage({...displayMessage, 'loading': true});
@@ -80,14 +79,7 @@ const AdminDashboard = () =>{
             setData(dataSet);
             setUserData(userDataSet);
         } else {
-            setDisplayMessage({
-                isDisplay: true,
-                isMessage: isCode === UNAUTHORIZED_CODE ? MESSAGE_UNAUTHORIZED : (isMessage === undefined ? MESSAGE_SERVER_ERROR : isMessage),
-                isSuccess: isSuccess,
-                loading: false
-            });
-            // if unauthorized then log out
-            UnauthorizedLogout(isCode,navigate);
+            DisplayMessagesToUI({setDisplayMessage,isDisplay: true, isSuccess : isSuccess,isCode,isMessage,customPageMessage:MESSAGE_SERVER_ERROR,navigate});
         }
     };
     return (

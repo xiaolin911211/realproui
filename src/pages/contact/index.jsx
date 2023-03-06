@@ -1,22 +1,17 @@
 import React, {useContext, useState} from "react";
 import { UserContext} from "../../contexts/context";
-import {DisplayMessage, Loading} from "../../common/sharedComponent";
+import {CommonLoadHttp, DisplayMessage, DisplayMessagesToUI, Loading} from "../../common/sharedComponent";
 import {
-    ACTION_SET_ADDITIONAL_COMMENTS,
+    ACTION_SET_ADDITIONAL_COMMENTS, DISPLAY_INIT,
     MESSAGE_SERVER_ERROR, MESSAGE_SUCCESS_CONTACT_US,
-    MESSAGE_SUCCESS_CREATE_ORDER
+    MESSAGE_SUCCESS_CREATE_ORDER, METHOD_POST
 } from "../../common/constants";
 import {httpCommonPost} from "../../api/http-request";
 import {Button} from "flowbite-react";
 
 const Contact = () => {
 
-    const [displayMessage, setDisplayMessage] = useState({
-        isDisplay: false,
-        isMessage: '',
-        isSuccess: false,
-        loading: false
-    });
+    const [displayMessage, setDisplayMessage] = useState(DISPLAY_INIT);
     const [contactInput, setContactInput] = useState({
         email: '',
         phone: '',
@@ -60,19 +55,17 @@ const Contact = () => {
     const contactUsHttpHandler = async (e) => {
         e.preventDefault();
         if (validateInputs()) {
-            setDisplayMessage({...displayMessage, 'loading': true});
-            const contactUsResponse = await httpCommonPost(process.env.REACT_APP_BASE_PATH + process.env.REACT_APP_URL_CONTACT_US,contactInput);
-            const [isSuccess, isMessage] = [contactUsResponse?.data?.success, contactUsResponse?.data?.msg];
-            console.log('isSuccess',isSuccess);
-            setDisplayMessage({...displayMessage, 'loading': false});
-
-            setDisplayMessage({
+            await CommonLoadHttp({
+                url: process.env.REACT_APP_URL_CONTACT_US,
+                displayMessage,
+                setDisplayMessage,
+                request: contactInput,
+                token: '',
+                method: METHOD_POST,
                 isDisplay: true,
-                isMessage: isSuccess ? MESSAGE_SUCCESS_CONTACT_US: (isMessage === undefined ? MESSAGE_SERVER_ERROR : isMessage),
-                isSuccess: isSuccess,
-                loading: false
-            });
-
+                customPageMessage: MESSAGE_SUCCESS_CONTACT_US,
+                navigate: ''
+            })
         }
 
     };
@@ -142,8 +135,10 @@ const Contact = () => {
 
                             <Button
                                 disabled={displayMessage.isSuccess}
+                                color="dark"
+                                pill={true}
                                 type="submit"
-                                className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
+                                className="inline-block px-7 py-3  text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:shadow-lg ease-in-out w-full"
                                 data-mdb-ripple="true"
                                 data-mdb-ripple-color="light"
                             >

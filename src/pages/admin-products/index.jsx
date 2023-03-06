@@ -1,32 +1,21 @@
 import {
     CACHE_SERVICES,
-    MESSAGE_SERVER_ERROR,
-    MESSAGE_SUCCESS_UPDATE_USER,
-    MESSAGE_UNAUTHORIZED,
-    SERVICES_HEADER,
-    UNAUTHORIZED_CODE
+    DISPLAY_INIT,
+    MESSAGE_SUCCESS_UPDATE_PRODUCT,
+    METHOD_GET,
+    METHOD_PUT,
+    SERVICES_HEADER
 } from "../../common/constants";
-import {DisplayMessage, FetchDataCache, UnauthorizedLogout} from "../../common/sharedComponent";
-import {useContext, useEffect, useState} from "react";
+import {CommonLoadHttp, DisplayMessage, Loading} from "../../common/sharedComponent";
+import React, {useEffect, useState} from "react";
 
 import SidebarAdmin from "../../navigation/sidebar";
 import ProductsTable from "./tables";
-import AdminProductsModel from "./model";
-import {httpCommonPut} from "../../api/http-request";
-import {UserContext} from "../../contexts/context";
-import {useNavigate} from "react-router-dom";
+import AdminProductsModalEdit from "./model-edit";
 
 const AdminProducts = () =>{
     const [services, setServices] = useState([]);
-    const {state} = useContext(UserContext);
-    const navigate = useNavigate();
-    const [displayMessage, setDisplayMessage] = useState({
-        isDisplay: false,
-        isMessage: '',
-        isSuccess: false,
-        loading: false
-    });
-
+    const [displayMessage, setDisplayMessage] = useState(DISPLAY_INIT);
     const [displayProduct, setDisplayProduct] = useState([]);
     const [selectStatus, setSelectStatus] = useState('default');
     const [selectedProduct, setSelectedProduct] = useState('');
@@ -35,16 +24,18 @@ const AdminProducts = () =>{
 
         const storedServices = sessionStorage.getItem(CACHE_SERVICES);
         //check if session storage have data, if true return else call API
+
         if (!storedServices) {
             setServicesHandler();
         } else {
+
             setServices(JSON.parse(storedServices));
             setDisplayProduct(convertProductToDisplay(JSON.parse(storedServices)));
         }
     }, []);
     const convertProductToDisplay = (payload) =>{
 
-       const displayServicesList =  (payload?.data?.map((row => row.pricing.map(element  => ({
+       const displayServicesList =  (payload?.data?.map((row => row?.pricing?.map(element  => ({
             productId: element.productId,
             propertySize: row.propertySizeName,
             productName: element.productName,
@@ -57,7 +48,7 @@ const AdminProducts = () =>{
         setSelectStatus(e);
         const status = e === "default" ? null : parseInt(e);
         const convertedService = convertProductToDisplay(services);
-        const productListTemp = (e == 'default') ? convertedService:convertedService.filter(product => product.active == (status));
+        const productListTemp = (e === 'default') ? convertedService:convertedService.filter(product => product.active === (status));
         setDisplayProduct(productListTemp);
 
     };
@@ -69,47 +60,43 @@ const AdminProducts = () =>{
         const productListTemp = convertedService.filter(product => (product.productName).toLowerCase().includes(searchValue.toLowerCase()));
         setDisplayProduct(productListTemp);
 
-    }
+    };
 
 
     const onClickUpdateProduct = async () => {
-
         setEditOpenStatus(false);
-        setDisplayMessage({...displayMessage, loading: true});
-        const updateProductResponse = await httpCommonPut(process.env.REACT_APP_BASE_PATH + process.env.REACT_APP_URL_UPDATE_PRODUCT, selectedProduct, state.sessionToken);
-        setDisplayMessage({...displayMessage, loading: false});
-        const [isSuccess, isMessage, isCode] = [updateProductResponse?.data?.success, updateProductResponse?.data?.msg, updateProductResponse?.data?.code];
-
-        if (isSuccess) {
+           const httpResponse = await CommonLoadHttp({
+            url: process.env.REACT_APP_URL_UPDATE_PRODUCT,
+            displayMessage,
+            setDisplayMessage,
+            request: selectedProduct,
+            token: '',
+            method: METHOD_PUT,
+            isDisplay: true,
+            customPageMessage: MESSAGE_SUCCESS_UPDATE_PRODUCT,
+            navigate: ''
+        });
+        if (httpResponse.isSuccess) {
             await setServicesHandler();
         }
-        setDisplayMessage({
-            isDisplay: true,
-            isMessage: isSuccess ? MESSAGE_SUCCESS_UPDATE_USER : (isCode === UNAUTHORIZED_CODE ? MESSAGE_UNAUTHORIZED : (isMessage === undefined ? MESSAGE_SERVER_ERROR : isMessage)),
-            isSuccess: isSuccess,
-            loading: false
-        });
-        // if unauthorized then log out
-        UnauthorizedLogout(isCode,navigate);
-    }
+
+    };
     const setServicesHandler = async () =>{
-        setDisplayMessage({...displayMessage, 'loading': true});
-        const fetchServiceDataResponse = await FetchDataCache(CACHE_SERVICES, process.env.REACT_APP_URL_GET_PRODUCTS);
-        setDisplayMessage({...displayMessage, 'loading': false});
-        const [isSuccess, isMessage] = [fetchServiceDataResponse?.success,fetchServiceDataResponse?.msg];
-        if (isSuccess) {
-            setServices(fetchServiceDataResponse);
-            setDisplayProduct(convertProductToDisplay(fetchServiceDataResponse));
-        } else {
-            //only display when error
-            setDisplayMessage({
-                isDisplay: !isSuccess,
-                isMessage: isMessage === undefined ? MESSAGE_SERVER_ERROR: isMessage,
-                isSuccess: isSuccess,
-                loading: false
-            });
-        }
-    }
+        const httpResponse = await CommonLoadHttp({
+            url: process.env.REACT_APP_URL_GET_PRODUCTS,
+            displayMessage,
+            setDisplayMessage,
+            request: '',
+            token: '',
+            method: METHOD_GET,
+            isDisplay: displayMessage.isSuccess,
+            customPageMessage: '',
+            navigate: '',
+            cache: CACHE_SERVICES
+        });
+        setServices(httpResponse?.isData);
+        setDisplayProduct(convertProductToDisplay(httpResponse?.isData));
+    };
     return (
         <section>
 
@@ -168,8 +155,9 @@ const AdminProducts = () =>{
                         </div>
                         <DisplayMessage isDisplay={displayMessage.isDisplay} isMessage={displayMessage.isMessage}
                                         isSuccess={displayMessage.isSuccess}/>
+                        <Loading isActive={displayMessage.loading}/>
                         <ProductsTable getServiceList={displayProduct} openEditHandler={(payload)=>{ setSelectedProduct(payload);setEditOpenStatus(true)}} headerCell={SERVICES_HEADER}/>
-                        <AdminProductsModel editOpenStatus={editOpenStatus} onClickOpenStatus={()=>setEditOpenStatus(false)}  selectedServices={selectedProduct} onChangeUpdateProduct={ (payload)=> setSelectedProduct(payload)} onClickUpdateProduct={onClickUpdateProduct} />
+                        <AdminProductsModalEdit editOpenStatus={editOpenStatus} onClickOpenStatus={()=>setEditOpenStatus(false)}  selectedServices={selectedProduct} onChangeUpdateProduct={ (payload)=> setSelectedProduct(payload)} onClickUpdateProduct={onClickUpdateProduct} />
                     </div>
                 </div>
             </div>

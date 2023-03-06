@@ -20,6 +20,8 @@ import AdminUsers from "./pages/admin-users";
 import AdminDashboard from "./pages/admin-dashboard";
 import Profile from "./pages/profile";
 import AdminAssignOrder from "./pages/admin-assign-order";
+import Activation from "./pages/activation";
+import ResetPassword from "./pages/reset-password";
 
 const App = () => {
 
@@ -27,21 +29,23 @@ const App = () => {
 
         <BrowserRouter>
             <OrderProvider>
-
+                <BookNowProvider>
                 <Routes>
                     <Route path={"/"} element={<Layout/>}>
                         <Route index element={<Home/>}/>
                         <Route path="contact" element={<Contact/>}/>
                         <Route path="login" element={<Login/>}/>
+                        <Route path="resetpassword/:email/:token" element={<ResetPassword/>}/>
+                        <Route path="activation/:token" element={<Activation/>}/>
                         <Route path="forgotpassword" element={<ForgotPassword/>}/>
                         <Route path="services" element={
                             <Services/>
                         }/>
                         <Route path="booknow" element={
                             <Protected>
-                                <BookNowProvider>
+
                                     <BookNow/>
-                                </BookNowProvider>
+
                             </Protected>
                         }/>
                         <Route path="registration" element={<Registration/>}/>
@@ -96,7 +100,7 @@ const App = () => {
 
                     </Route>
                 </Routes>
-
+                </BookNowProvider>
             </OrderProvider>
         </BrowserRouter>
 

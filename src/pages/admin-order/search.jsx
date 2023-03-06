@@ -2,7 +2,7 @@ import {ADMIN_ORDER_SEARCH_LIST, ORDER_STATUS} from "../../common/constants";
 import {Button} from "flowbite-react";
 import {HiUserAdd} from "react-icons/hi";
 
-const AdminOrderSearch = ({pagination, searchBy, setSearchBy,setPagination,onChangeSearch, onSelectStatusType}) => {
+const AdminOrderSearch = ({pagination, searchBy, setSearchBy,setPagination,onChangeSearch, onSelectStatusType, onClickAddOrderOpen}) => {
     return (
         <div className="flex justify-between items-center pb-4 bg-white dark:bg-gray-900">
 
@@ -65,11 +65,11 @@ const AdminOrderSearch = ({pagination, searchBy, setSearchBy,setPagination,onCha
 
             <div className="relative">
                 <Button
-                    // onClick={()=>setModalOpen({...modalOpen,openAdd: true})}
+                    onClick={onClickAddOrderOpen}
                     color="dark"
                     pill={true}>
-                    <HiUserAdd className="mr-2 h-5 w-5"/>
-                    Add User
+
+                    Add New Order
                 </Button>
             </div>
         </div>

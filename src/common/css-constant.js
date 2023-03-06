@@ -1,0 +1,3 @@
+export const INPUT_BLUE_BG = "form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-blue-50 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none";
+export const BTN_WIDE = "inline-block px-7 py-3  text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:shadow-lg ease-in-out w-full";
+export const LABEL_FORM = "block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300";

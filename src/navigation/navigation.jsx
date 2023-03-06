@@ -51,10 +51,10 @@ const Navbars = () => {
                         >
                             <Dropdown.Header>
                 <span className="block text-sm">
-                  Bonnie Green
+                  {state.userName}
                 </span>
                                 <span className="block truncate text-sm font-medium">
-                  name@flowbite.com
+                  {state.email}
                 </span>
                             </Dropdown.Header>
                             <Dropdown.Item onClick={onClickProfile}>
@@ -71,7 +71,7 @@ const Navbars = () => {
                                 Sign out
                             </Dropdown.Item>
                         </Dropdown>) :
-                        // <Navbar.Toggle />
+
                 <Navbar.Collapse>
                   <Navbar.Link
                         href="/login"

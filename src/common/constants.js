@@ -1,17 +1,68 @@
+import {AddingSelectedProductId, addingSelectedProductId} from "./sharedComponent";
+
 export const NAVIGATION = [
     {name: "Home", href: "/", current: false},
     {name: "Services", href: "/services", current: false},
     {name: "Booknow", href: "/booknow", current: false},
     {name: "Contact", href: "/contact", current: false},
 ];
+export const COMMON_RETURN_DISPLAY = ({displayMessage, isMessage}) => {
+    return {
+        ...displayMessage,
+        isDisplay: true,
+        isMessage: isMessage,
+        isSuccess: false
+    };
+};
+export const COMMON_CREATE_ORDER_REQUEST = ({displayMessage, setDisplayMessage, stateBookNow, state}) => {
+
+    return {
+        url: process.env.REACT_APP_URL_POST_CREATE_ORDER,
+        displayMessage,
+        setDisplayMessage,
+        request:
+            {
+                productId: AddingSelectedProductId({stateBookNow}),
+                address: {
+                    unitNumber: stateBookNow.unitNumber,
+                    streetNumber: stateBookNow.streetNumber,
+                    streetName: stateBookNow.streetName,
+                    city: stateBookNow.selectPropertyRegion,
+                    propertyTypeId: stateBookNow.selectPropertyType,
+                    propertySize: stateBookNow.selectPropertySize,
+                    postalCode: stateBookNow.postalCode,
+                    province: PROVINCE_ON,
+                },
+                scheduleDate: stateBookNow.serviceDatetime.toISOString().slice(0, 10),
+                arriveTime: stateBookNow.serviceArriveTime,
+                note: stateBookNow.additionalComments,
+                userId: state.userId,
+            },
+        token: state.sessionToken,
+        method: METHOD_POST,
+        isDisplay: true,
+        customPageMessage: MESSAGE_SUCCESS_CREATE_ORDER
+    }
+};
+export const METHOD_GET = 'get'
+export const METHOD_POST = 'post'
+export const METHOD_PUT = 'put'
 export const ACCOUNT_TYPE_ADMIN = 1;
 export const ACCOUNT_TYPE_AGENT = 2;
 export const ACCOUNT_TYPE_STAFF = 3;
+export const PROVINCE_ON = 1;
+export const PROPERTY_INIT = {
+    servicesData: [],
+    propertyTypeData: [],
+    propertyRegionData: [],
+    scheduleTimeData: []
+};
 export const DISPLAY_INIT = {
     isDisplay: false,
     isMessage: '',
     isSuccess: false,
-    loading: false
+    loading: false,
+    isCode: null
 };
 export const ORDER_STATUS = [
     {
@@ -76,11 +127,11 @@ export const USER_ROLES = [
         role: 'Agent'
     },
     {
-        id: 1,
+        id: 3,
         role: 'Photographer'
     }
 ]
-export const ORDER_HISTORY_HEADER = ['order #', 'Order Date', 'Schedule Time', 'Destination', 'Property Information', 'Services', 'Comments', 'Status', ''];
+export const ORDER_HISTORY_HEADER = ['order #', 'Order Date', 'Agent', 'Schedule Time', 'Destination', 'Property Information', 'Services', 'Price', 'Comments', 'Status', ''];
 export const SERVICES_HEADER = ['ID', 'Property Size', 'Product Name', 'Price', 'Status', ''];
 export const USERS_HEADER = ['Name', 'Email', 'Account Type', 'Phone', 'Status', ''];
 export const initialState = {
@@ -92,7 +143,7 @@ export const initialStateOrder = {
     products: '',
     address: ''
 };
-export const initialStateBookNow = {
+export const INITIAL_STATE_BOOKNOW = {
     selectPropertySize: '',
     selectPropertyService: '',
     selectPropertyType: '',
@@ -101,15 +152,15 @@ export const initialStateBookNow = {
     streetNumber: '',
     streetName: '',
     postalCode: '',
-    province: 'ON',
-    lockBoxPwd: '',
-    vacant: true,
+    province: 'Ontario',
     additionalComments: '',
-    serviceDatetime: new Date(),
+    serviceDatetime: '',
+    serviceArriveTime: '',
     propertyServices: [],
     extraService: [],
     checkedService: [],
-    displayCheckService: []
+    displayCheckService: [],
+    userId:''
 };
 export const STEPPER_INFO = [
     {id: 1, name: "Property Info"},
@@ -152,6 +203,7 @@ export const SESSION_ORDER = 'SESSION_ORDER';
 export const CACHE_SERVICES = 'CACHE_SERVICES';
 export const CACHE_PROPERTY_TYPE = 'CACHE_PROPERTY_TYPE';
 export const CACHE_PROPERTY_REGION = 'CACHE_PROPERTY_REGION';
+export const CACHE_SCHEDULE_TIME = 'CACHE_SCHEDULE_TIME';
 export const ACTION_SET_PROPERTY_SIZE = 'ACTION_SET_PROPERTY_SIZE';
 export const ACTION_SET_PROPERTY_REGION = 'ACTION_SET_PROPERTY_REGION';
 export const ACTION_SET_PROPERTY_TYPE = 'ACTION_SET_PROPERTY_TYPE';
@@ -161,20 +213,24 @@ export const ACTION_SET_STREET_NUMBER = 'ACTION_SET_STREET_NUMBER';
 export const ACTION_SET_STREET_NAME = 'ACTION_SET_STREET_NAME';
 export const ACTION_SET_POSTAL_CODE = 'ACTION_SET_POSTAL_CODE';
 export const ACTION_SET_PROVINCE = 'ACTION_SET_PROVINCE';
-export const ACTION_SET_LOCKBOX_PWD = 'ACTION_SET_LOCKBOX_PWD';
 export const ACTION_SET_VACANT = 'ACTION_SET_VACANT';
 export const ACTION_SELECT_ORDER = 'ACTION_SELECT_ORDER';
 export const ACTION_SET_ADDITIONAL_COMMENTS = 'ACTION_SET_ADDITIONAL_COMMENTS';
 export const ACTION_SET_PROPERTY_SERVICES = 'ACTION_SET_PROPERTY_SERVICES';
+export const ACTION_SET_USER_ID = 'ACTION_SET_USER_ID';
 export const ACTION_SET_SERVICE_DATE_TIME = 'ACTION_SET_SERVICE_DATE_TIME';
-
+export const ACTION_SET_SERVICE_ARRIVE_TIME = 'ACTION_SET_SERVICE_ARRIVE_TIME';
 export const ACTION_SET_EXTRA_SERVICE = 'ACTION_SET_EXTRA_SERVICE';
 export const ACTION_SET_DISPLAY_SERVICES = 'ACTION_SET_DISPLAY_SERVICES';
+export const ACTION_RESET = 'ACTION_RESET';
+export const ACTION_EDIT_DISPATCH = 'ACTION_EDIT_DISPATCH';
 export const ACTION_SET_CHECKED_SERVICES = 'ACTION_SET_CHECKED_SERVICES';
 
 export const MESSAGE_SUCCESS_FORGOT_PWD = 'Password reset Email has send to your mail box';
 export const MESSAGE_SUCCESS_CREATE_ORDER = 'Order was created successful, please check your email for invoice and we will contact you as soon as possible';
 export const MESSAGE_SUCCESS_REGISTER = 'Account was created, please check email to activate account';
+export const MESSAGE_SUCCESS_ACTIVATION = 'Account activated successfully, please try and login';
+export const MESSAGE_SUCCESS_PWD_RESET = 'Password reset successfully, please try and login';
 export const MESSAGE_SUCCESS_UPDATE_PRODUCT = 'Product Service Updated Successfully';
 export const MESSAGE_SUCCESS_UPDATE_USER = 'User Updated Successfully';
 export const MESSAGE_SUCCESS_UPDATE = 'Updated Successfully';

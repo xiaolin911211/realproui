@@ -66,7 +66,7 @@ const PropertyInfo = ({propertyData, propertyInfo, setPropertyInfo}) =>{
             //else delete from checked service by ID
             updatedList.splice(propertyInfo.checkedService.indexOf(e.target.value), 1);
         }
-        console.log('Checked Service', updatedList);
+
         setPropertyInfo({type: ACTION_SET_CHECKED_SERVICES, value: updatedList});
         const extraServiceList = [];
         for (let x = 0; x < updatedList.length; x++) {
@@ -82,7 +82,7 @@ const PropertyInfo = ({propertyData, propertyInfo, setPropertyInfo}) =>{
                 );
             }
         }
-        console.log('Display Service',extraServiceList);
+
         setPropertyInfo({type: ACTION_SET_DISPLAY_SERVICES, value: extraServiceList});
     };
 

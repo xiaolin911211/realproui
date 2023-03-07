@@ -5,7 +5,7 @@ import ContactInfo from "../booknow/contact-info";
 import {DropDownAgent} from "../../common/sharedComponent";
 import CartProducts from "../booknow/cart-products";
 const AdminOrderEdit = ({openEdit, onClose, stateOrder, dispatchOrderNow,propertyData,userList}) =>{
-    console.log('ADMIN EDIT stateOrder ',stateOrder);
+
     return (
         <Modal size="5xl" className="overflow-x-hidden overflow-y-auto"  show={openEdit}   popup onClose={onClose}>
             <Modal.Body className="overflow-x-hidden overflow-y-auto" >

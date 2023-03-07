@@ -149,7 +149,7 @@ export const bookNowReducer = (state, action) => {
                 propertyServices: action.propertyDateList?.servicesData?.data.filter((item) => parseInt(item.propertySizeId) === parseInt(action.value?.address?.propertySize?.id))[0].pricing,
                 extraService: filteredProductTypes,
                 checkedService: checkedServiceItem,
-                displayCheckService: action.value?.products,
+                displayCheckService: checkedServiceProduct,
                 userId: action.value?.userId
 
             };

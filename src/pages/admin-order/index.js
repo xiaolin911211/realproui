@@ -53,6 +53,7 @@ const AdminOrder = () => {
     });
     const [displayMessage, setDisplayMessage] = useState(DISPLAY_INIT);
     const [stateOrder, dispatchOrderNow] = useReducer(bookNowReducer, INITIAL_STATE_BOOKNOW);
+    console.log('ONLOAD stateOrder',stateOrder)
     useEffect(() => {
         fetchUserInformation();
         CheckPropertyCache({propertyData, setPropertyData, displayMessage, setDisplayMessage});
@@ -178,7 +179,7 @@ const AdminOrder = () => {
                                               />
                             <DisplayMessage isDisplay={displayMessage.isDisplay} isMessage={displayMessage.isMessage}
                                             isSuccess={displayMessage.isSuccess}/>
-                            <Tables getOrderList={orderData} openOrderDetailHandler={(payload) => {
+                            <Tables key={'t'} getOrderList={orderData} openOrderDetailHandler={(payload) => {
                                 openOrderDetailHandler(payload);
                                 setModalOpen({...modalOpen, openEdit: true}) 
                             }} label={'Edit'} headerCell={ORDER_HISTORY_HEADER} userList={userList} />

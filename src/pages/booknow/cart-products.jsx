@@ -1,5 +1,8 @@
-const CartProducts = ({propertyData,stateBookNow}) =>{
+import { UNDEFINED } from "swr/_internal";
 
+const CartProducts = ({propertyData,stateBookNow}) =>{
+    console.log('Cart :',stateBookNow);
+    console.log('Cart stateBookNow :',stateBookNow?.displayCheckService?.productName === undefined);
     return(
         <>
         <div
@@ -41,7 +44,7 @@ const CartProducts = ({propertyData,stateBookNow}) =>{
                                 </div>
                             </div>
                             {stateBookNow?.displayCheckService?.map((item, index) => (
-                                <div
+                                <div key={index}
                                     className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
                                     <div className="pb-4 md:pb-8 w-full md:w-40">
                                         <img
@@ -59,7 +62,7 @@ const CartProducts = ({propertyData,stateBookNow}) =>{
                                         className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
                                         <div className="w-full flex flex-col justify-start items-start space-y-8">
                                             <h3 className="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">
-                                                {item.productName} (Extra Service)
+                                                {item.productName === undefined ? item?.description: item?.productName} (Extra Service)
                                             </h3>
                                         </div>
                                         <div className="flex justify-between space-x-8 items-start w-full">

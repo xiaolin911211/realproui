@@ -12,7 +12,6 @@ import {BookNowProvider, OrderProvider} from "./contexts/context";
 import ForgotPassword from "./pages/forgot-password";
 import OrderHistory from "./pages/order-history";
 import OrderDetail from "./pages/order-detail";
-import {Breadcrumb} from "flowbite-react";
 import MakePayment from "./pages/make-payment";
 import AdminOrder from "./pages/admin-order";
 import AdminProducts from "./pages/admin-products";
